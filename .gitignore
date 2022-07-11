@@ -1,0 +1,6 @@
+.idea/
+*.key
+*.pub
+sbom.yaml
+image.txt
+output
