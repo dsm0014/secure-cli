@@ -11,8 +11,6 @@ jobs:
   # Generate ldflags dynamically.
   args:
     runs-on: ubuntu-latest
-    outputs:
-      ldflags: ${{ steps.ldflags.outputs.value }}
     steps:
       - id: checkout
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # v2.3.4
