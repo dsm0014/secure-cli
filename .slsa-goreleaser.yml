@@ -10,6 +10,6 @@ flags:
 
 goos: linux
 goarch: amd64
-binary: scorecard-{{ .Os }}-{{ .Arch }}
+binary: secure-cli-{{ .Os }}-{{ .Arch }}
 ldflags:
   - -s {{ .Env.VERSION_LDFLAGS }}
