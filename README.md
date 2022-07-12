@@ -1,19 +1,10 @@
-# Build 
+# secure-cli
+A very basic Golang cli tool utilizing Cobra. This repo is meant to showcase
+a small example of a secure software supply chain.
 
-# Setup Ko
-Download Ko TODO LINK
-
-set the `KO_DOCKER_REPO` env var to point to your registry (or use dockerhub username)
-
-# Build Layer
-
-## Ko for image and sbom (Golang only)
-build OCI image and push it to your set docker registry using Ko
-
-run `ko build --image-refs image.txt .`
-
+# Build Process
 ## Docker Build && Sigstore approach
-from project root Github Actions produces SLSA lvl3 provenance
+Github Actions produces SLSA lvl3 provenance
 
 ^^ The above also produces golang executable
 
