@@ -40,7 +40,7 @@ jobs:
 
   docker:
     permissions:
-      contents: read
+      contents: write
       packages: write
     needs: args
     steps:
@@ -80,8 +80,6 @@ jobs:
         run: cosign sign --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
 
       - uses: anchore/sbom-action@v0
-        permissions:
-           contents: write
         id: image-sbom
         with:
           image: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
