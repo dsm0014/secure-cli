@@ -42,7 +42,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    needs: args
+    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -83,5 +83,5 @@ jobs:
         id: image-sbom
         with:
           image: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
-          artifact-name: ${{ jobs.build.outputs.go-binary-name }}.sbom
+          artifact-name: ${{ needs.build.outputs.go-binary-name }}.sbom
 
