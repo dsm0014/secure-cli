@@ -4,7 +4,7 @@ a small example of a secure software supply chain.
 
 # How the Build Process Works
 Using the [slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) 
-project's [Github Action for SLSA Level 3 provenance in Golang]((https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_go_slsa3.yml@v1.1.1)) 
+project's [Github Action for SLSA Level 3 provenance in Golang](https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_go_slsa3.yml@v1.1.1) 
 will produce a Golang binary and an SLSA Level 3 provenance document.
 Both of these artifacts are uploaded to the Release which triggered the Github Action.`
 
