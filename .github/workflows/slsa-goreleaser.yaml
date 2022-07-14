@@ -82,7 +82,14 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
+          name: ${{ needs.build.outputs.go-binary-name }}
+
+      - uses: actions/download-artifact@v3
+        with:
           name: ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl
+
+      - name: Set RELEASE_VERSION env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Log into registry
         uses: docker/login-action@v1.12.0
@@ -108,11 +115,17 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: cosign sign --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
 
+      - uses: actions/setup-go@v3
+      - name: Get the slsa-verifier to extract provenance
+        run: |
+          go install github.com/slsa-framework/slsa-verifier@v1.1.1
+          slsa-verifier -artifact-path ${{ needs.build.outputs.go-binary-name }} -provenance ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl -source github.com/dsm0014/secure-cli -tag ${{ env.RELEASE_VERSION }} -branch master -print-provenance > provenance.json
+
       - name: Attest the SLSA provenance
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          jq '.predicate' ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl > provenance.att
+          jq '.predicate' provenance.json > provenance.att
           cosign attest --predicate provenance.att --type slsaprovenance --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
 
       - name: Attest the SBOM
