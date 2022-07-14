@@ -111,11 +111,13 @@ jobs:
       - name: Attest the SLSA provenance
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: jq '.predicate' ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl | cosign attest --predicate - --type slsaprovenance --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+        run: |
+          jq '.predicate' ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl > provenance.att
+          cosign attest --predicate provenance.att --type slsaprovenance --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
 
       - name: Attest the SBOM
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: jq '.predicate' ${{ needs.build.outputs.go-binary-name }}.sbom | cosign attest --predicate - --type spdx --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+        run: cosign attest --predicate ${{ needs.build.outputs.go-binary-name }}.sbom --type spdx --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
 
 
