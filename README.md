@@ -4,21 +4,29 @@ a small example of a secure software supply chain.
 
 # How the Build Process Works
 Using the [slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) 
-project's [Github Action for SLSA Level 3 provenance in Golang]((https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_go_slsa3.yml@v1.1.1)) 
+project's [Github Action for SLSA Level 3 provenance in Golang](https://github.com/slsa-framework/slsa-github-generator/.github/workflows/builder_go_slsa3.yml@v1.1.1) 
 will produce a Golang binary and an SLSA Level 3 provenance document.
 Both of these artifacts are uploaded to the Release which triggered the Github Action.`
 
 Build the application docker image with the produced Golang binary and push the image to the target registry.
 
-Sign the docker image with help from the 
-[Sigstore cosign-installer Github Action](https://github.com/sigstore/cosign-installer).
-
-Finally, generate an SBOM for the docker image in SPDX.json format and upload it to the 
+Generate an SBOM for the docker image in SPDX.json format and upload it to the
 Github Release Artifacts with [Anchore's github action](https://github.com/anchore/sbom-action).
+
+Sign the docker image with help from the
+[Sigstore cosign-installer Github Action](https://github.com/sigstore/cosign-installer). 
+Then use `sigstore` to attest the SBOM and SLSA provenance documents to the docker image.
+<br>
+This will come in handy later when we deploy.
+
+_Be aware_, the `.intoto.jsonl` document needs to be processed slightly before attesting with `cosign`.  
+The command to do so is `jq '.predicate' provenance>.intoto.jsonl > provenance.att`. This `.att` file can then be used to attest the image with:
+`cosign attest --predicate provenance.att --type slsaprovenance --key <cosign-key>.key <image:tag> `
+
 
 # Verify SLSA Level 3 Provenance
 To verify our SLSA provenance, you'll need to download the golang binary and 
-corresponding`*.intoto.jsonl` files from the Github Release Actifacts page.
+corresponding`*.intoto.jsonl` files from the Github Release Artifacts page.
 
 Install the [slsa-verifier](https://github.com/slsa-framework/slsa-verifier) cli tool.
 
