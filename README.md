@@ -17,10 +17,21 @@ Sign the docker image with help from the
 [Sigstore cosign-installer Github Action](https://github.com/sigstore/cosign-installer). 
 Then use `sigstore` to attest the SBOM and SLSA provenance documents to the docker image.
 <br>
-This will come in handy later when we deploy.
+First, we need to extract our provenance from the `.intoto.jsonl` file.
 
-_Be aware_, the `.intoto.jsonl` document needs to be processed slightly before attesting with `cosign`.  
-The command to do so is `jq '.predicate' provenance>.intoto.jsonl > provenance.att`. This `.att` file can then be used to attest the image with:
+Locally, this can be accomplished with:
+```
+slsa-verifier -artifact-path ./filepath/secure-cli-linux-amd64 -provenance ./filepath/secure-cli-linux-amd64.intoto.jsonl -source github.com/dsm0014/secure-cli -tag <version-tag> -branch master -print-provenance > provenance.json
+```
+<br>
+These attestations will come in handy later when we deploy.
+
+_Be aware_, the `.json` provenance document needs to be processed slightly before attesting with `cosign`.  
+The command to do so is: 
+```
+jq '.predicate' provenance>.intoto.jsonl > provenance.att
+``` 
+This `.att` file can then be used to attest the image with:
 `cosign attest --predicate provenance.att --type slsaprovenance --key <cosign-key>.key <image:tag> `
 
 
