@@ -126,8 +126,7 @@ jobs:
 
       - name: Get the slsa-verifier to extract provenance
         run: |
-          cd slsa-verifier
-          go run . -artifact-path ${{ needs.build.outputs.go-binary-name }} -provenance ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl -source github.com/dsm0014/secure-cli -tag ${{ env.RELEASE_VERSION }} -branch master -print-provenance > provenance.json
+          go run ./slsa-verifier/ -artifact-path ${{ needs.build.outputs.go-binary-name }} -provenance ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl -source github.com/dsm0014/secure-cli -tag ${{ env.RELEASE_VERSION }} -branch master -print-provenance > provenance.json
 
       - name: Attest the SLSA provenance
         env:
