@@ -116,10 +116,18 @@ jobs:
         run: cosign sign --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
 
       - uses: actions/setup-go@v3
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: slsa-framework/slsa-verifier
+          ref: v1.1.1
+          path: slsa-verifier
+
       - name: Get the slsa-verifier to extract provenance
         run: |
-          go install github.com/slsa-framework/slsa-verifier@v1.1.1
-          slsa-verifier -artifact-path ${{ needs.build.outputs.go-binary-name }} -provenance ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl -source github.com/dsm0014/secure-cli -tag ${{ env.RELEASE_VERSION }} -branch master -print-provenance > provenance.json
+          cd slsa-verifier
+          go run . -artifact-path ${{ needs.build.outputs.go-binary-name }} -provenance ${{ needs.build.outputs.go-binary-name }}.intoto.jsonl -source github.com/dsm0014/secure-cli -tag ${{ env.RELEASE_VERSION }} -branch master -print-provenance > provenance.json
 
       - name: Attest the SLSA provenance
         env:
