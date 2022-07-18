@@ -134,8 +134,13 @@ jobs:
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
+          cat provenance.json
           jq '.predicate' provenance.json > provenance.att
           cosign attest --predicate provenance.att --type slsaprovenance --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build.outputs.go-binary-name }}.sbom
 
       - name: Attest the SBOM
         env:
