@@ -145,6 +145,6 @@ jobs:
       - name: Attest the SBOM
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: cosign attest --predicate ${{ needs.build.outputs.go-binary-name }}.sbom --type spdx --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+        run: cosign attest --predicate ${{ needs.build.outputs.go-binary-name }}.sbom --type custom --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
 
 
