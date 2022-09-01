@@ -29,7 +29,7 @@ These attestations will come in handy later when we deploy.
 _Be aware_, the `.json` provenance document needs to be processed slightly before attesting with `cosign`.  
 The command to do so is: 
 ```
-jq '.predicate' provenance>.intoto.jsonl > provenance.att
+jq '.predicate' provenance.json > provenance.att
 ``` 
 This `.att` file can then be used to attest the image with:
 `cosign attest --predicate provenance.att --type slsaprovenance --key <cosign-key>.key <image:tag> `
