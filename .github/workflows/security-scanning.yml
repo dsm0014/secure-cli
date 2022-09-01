@@ -1,9 +1,10 @@
 name: Security Scanner
 on:
   pull_request:
-    branches: [*]
+    types: [opened, reopened]
   push:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   snyk-golang-scan:
